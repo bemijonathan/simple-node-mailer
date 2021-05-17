@@ -14,5 +14,13 @@
     "node-email"
   ],
   "author": "@bemijonathan",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bemijonathan/simple-node-mailer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bemijonathan/simple-node-mailer/issues"
+  },
+  "homepage": "https://github.com/bemijonathan/simple-node-mailer#readme"
 }
