@@ -1,11 +1,17 @@
-module.exports.hello = (data) => {
-    return JSON.stringify(data)
-}
+const Email = require('email-templates');
+const dotEnv = require('dotenv');
+dotEnv.config()
 
 /**
  * Mailer Class
  */
 class Mailer {
+
+    #from;
+    #username;
+    #password;
+    #preview;
+    #provider;
 
     /**
      * Creates a New Mailer Instance
@@ -33,11 +39,12 @@ class Mailer {
             throw new Error('host is required');
         }
 
-        this.from = from;
-        this.username = username;
-        this.password = password;
-        this.preview = preview;
-        this.provider = provider;
+        this.#from = from;
+        this.#username = username;
+        this.#password = password;
+        this.#preview = preview;
+        this.#provider = provider;
+        this.Email = Email
 
     }
 
@@ -45,19 +52,19 @@ class Mailer {
      * 
      * @returns {*} a new Email Object
      */
-    createEmailPayload = () => {
+    #createEmailPayload = () => {
         try {
             const email = new Email({
                 message: {
-                    from: this.from
+                    from: this.#from
                 },
                 send: true,
                 transport: {
-                    service: this.provider.service,
-                    host: this.provider.host,
+                    service: this.#provider.service,
+                    host: this.#provider.host,
                     auth: {
-                        user: this.username,
-                        pass: this.password
+                        user: this.#username,
+                        pass: this.#password
                     }
                 },
                 views: {
@@ -65,7 +72,7 @@ class Mailer {
                         extension: 'ejs'
                     }
                 },
-                preview: preview || process.env.NODE_ENV ? false : true
+                preview: this.#preview !== undefined ? this.#preview : process.env.NODE_ENV ? false : true
             })
             return email
         } catch (error) {
@@ -80,13 +87,14 @@ class Mailer {
      * @param {String[]} details.to 
      * @param {Array.<Object>} details.data data you want to send to the recieveer
      * @param {String} details.template name of the template folder
-     * @param {function (*, boolean) } callback that retunrns a boolean and details of the mail
+     * @param {function (Array.<Object>) } callback that returns an array of details of the mail
      */
-    sendEmail = ({ to, data, template }, callback) => {
+    sendmails = ({ to, data, template }, callback) => {
+        let response = []
         Promise.all(
             [...to.map(
                 (element, i) => {
-                    this.createEmailPayload()
+                    this.#createEmailPayload()
                         .send({
                             template,
                             message: {
@@ -94,14 +102,17 @@ class Mailer {
                             },
                             locals: data[i]
                         })
-                        .then(e => {
-                            return callback(e, true)
+                        .then(data => {
+                            response.push({ ...data, success: true })
+                            console.log(response)
                         })
-                        .catch(e => {
-                            return callback(e, false)
+                        .catch(error => {
+                            response.push({ ...error, success: false })
                         })
                 }
-            )])
+            )]).then(() => {
+                return callback(response);
+            })
     }
 }
 
@@ -109,15 +120,30 @@ module.exports.mailer = Mailer
 
 
 
-// const x = new Mailer(forgotPasswordMail = async (email, token) => {
-//     let mailOptions = createEmailPayload()
-//     sendEmail({
-//         mailOptions,
-//         to: [email],
-//         data: [{ token }],
-//         template: 'forgotpassword'
-//     }, (response) => {
-//         // console.log(chalk.yellow.bold(response, email))
-//         return response;
-//     })
-// }"bemijonathan", 'bemijonathan', 'wertertewrt', { service: 'gmail', host: 'smtp.gmail.com' }, false)
+
+
+// const x = new Mailer(
+//     // gmail user name
+//     process.env.email_username + 'gmail.com',
+//     process.env.email_username,
+//     process.env.email_password,
+//     { service: 'gmail', host: 'smtp.gmail.com' },
+//     false // to enable preview
+// )
+
+// /**
+//  * send to as many as your  customers as you wish
+//  */
+// x.sendmails({
+//     to: ['john@gmail.com', 'john@gmail.com'],
+//     data: [{
+//         name: "john",
+//         address: "40 london Avenue, Canada"
+//     }, 
+//     {
+//         name: "john",
+//         address: "40 london Avenue, Canada"
+//     }],
+//     //the name of the template on you root folder
+//     template: 'welcome_email'
+// }, console.log)
