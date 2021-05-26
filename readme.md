@@ -6,7 +6,7 @@
 
 ## Install 
 
-``` $ npm i --s simple-node-mailer ```
+``` $ npm i --s simple-node-mailer ejs```
 
 ## Usage 
 

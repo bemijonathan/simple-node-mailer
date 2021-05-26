@@ -1,6 +1,5 @@
 const Email = require('email-templates');
-const dotEnv = require('dotenv');
-dotEnv.config()
+
 
 /**
  * Mailer Class
@@ -116,7 +115,7 @@ class Mailer {
     }
 }
 
-module.exports.mailer = Mailer
+module.exports = Mailer
 
 
 

@@ -1,6 +1,6 @@
 {
   "name": "simple-node-mailer-and-viewer",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "a simple wrapper around nodemailer-smtp-transport for configuring and sending quick emails via smtp",
   "main": "index.js",
   "scripts": {
@@ -24,8 +24,6 @@
   },
   "homepage": "https://github.com/bemijonathan/simple-node-mailer#readme",
   "dependencies": {
-    "dotenv": "^10.0.0",
-    "ejs": "^3.1.6",
     "email-templates": "^8.0.7"
   }
 }
