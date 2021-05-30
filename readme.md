@@ -51,7 +51,8 @@ const x = new SimpleMailer(
     process.env.email_username,
     process.env.email_password,
     { service: 'gmail', host: 'smtp.gmail.com' },
-    false // to enable preview
+    false // to enable preview 
+    // if enabled the preview automatically opens a tab in browser
 )
 
 /**
@@ -63,7 +64,7 @@ x.sendmails({
         name: "john",
         address: "40 london Avenue, Canada"
     }],
-    //the name of the template on you root folder
+    //the name of the template on your root folder
     template: 'welcome_email'
 }, console.log)
 
@@ -71,4 +72,18 @@ x.sendmails({
 ```
 
 
-## Api
+in our new files
+
+```ejs 
+    //subject.ejs
+
+    Hello <%= name %>  this is a quick Notice for you 
+
+    // html.ejs
+
+    Mr / Mrs  <%= name %> your Rent at <%= address %> has expired and you will need to renew the sum of 50$ 
+    click the link to pay now
+
+    <button style="background:red: padding: 20px"> Click ME  <button>
+
+```
