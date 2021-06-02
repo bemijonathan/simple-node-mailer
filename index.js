@@ -88,12 +88,11 @@ class Mailer {
      * @param {String} details.template name of the template folder
      * @param {function (Array.<Object>) } callback that returns an array of details of the mail
      */
-    sendmails = ({ to, data, template }, callback) => {
-        let response = []
-        Promise.all(
-            [...to.map(
+    sendmails = async ({ to, data, template }, callback) => {
+        await Promise.all(
+            to.map(
                 (element, i) => {
-                    this.#createEmailPayload()
+                    return this.#createEmailPayload()
                         .send({
                             template,
                             message: {
@@ -101,16 +100,10 @@ class Mailer {
                             },
                             locals: data[i]
                         })
-                        .then(data => {
-                            response.push({ ...data, success: true })
-                            console.log(response)
-                        })
-                        .catch(error => {
-                            response.push({ ...error, success: false })
-                        })
+
                 }
-            )]).then(() => {
-                return callback(response);
+            )).then( (e) => {
+                return callback(e);
             })
     }
 }
@@ -130,19 +123,24 @@ module.exports = Mailer
 //     false // to enable preview
 // )
 
-// /**
-//  * send to as many as your  customers as you wish
-//  */
+/**
+ * send to as many as your  customers as you wish
+ */
 // x.sendmails({
-//     to: ['john@gmail.com', 'john@gmail.com'],
+//     to: ['john@gmail.com', '---------@gmail.com'],
 //     data: [{
 //         name: "john",
 //         address: "40 london Avenue, Canada"
-//     }, 
+//     },
 //     {
-//         name: "john",
-//         address: "40 london Avenue, Canada"
+//         name: "Samuel",
+//         address: "47 london Avenue, Canada"
 //     }],
 //     //the name of the template on you root folder
 //     template: 'welcome_email'
-// }, console.log)
+// }, logOutput)
+
+
+// function logOutput(output) {
+//     console.log(output, "this is the real value of this project")
+// }
